@@ -1,0 +1,90 @@
+---
+- name: Install MySQL on Redhat Linux
+  hosts: demo
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Install Wget & Python3
+      yum:
+        name:
+          - wget
+          - python3
+          - python3-devel
+          - mysql-devel
+          - gcc
+      become: yes   
+    - name: Download mysql rpm release-el7-5
+      get_url:
+        url: http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+        dest: /opt/mysql-community-release-el7-5.noarch.rpm
+
+    - name: Install rpm
+      yum:
+        name: /opt/mysql-community-release-el7-5.noarch.rpm
+        state: present
+      become: yes
+	  
+    - name: Update Package
+      yum:
+        name: '*'
+        state: latest
+      become: yes
+	  
+    - name: Sleep for 30 seconds and continue with play
+      wait_for: timeout=30
+      become: yes
+	  
+    - name: Install mySQL
+      yum:
+        name: mysql-server
+        state: installed
+      become: yes
+	  
+    - name: Start SQL Service
+      systemd:
+        name: mysqld
+        state: started
+        enabled: yes
+        become: yes
+		
+    - name: Install Python mysqlclient, connector & Flask dependencies
+      pip:
+        name:
+          - mysqlclient
+          - mysql-connector-python
+          - Flask-pymysql
+          - cymysql
+      become: yes
+	  
+    - name: Start SQL Service
+      systemd:
+        name: mysqld
+        state: restarted
+      become: yes
+	  
+    - name: Create a new database with name 'employee_db'
+      mysql_db:
+        name: employee_db
+        state: present
+      become: yes
+	  
+    - mysql_user:
+        name: db_user
+        password: 12345
+        priv: '*.*:ALL,GRANT'
+        state: present
+      become: yes
+	  
+    - name: Copy web-server code
+      copy: src=app.py dest=/opt/app.py
+      become: yes
+	  
+    - name: Start web-application
+      shell: FLASK_APP=/opt/app.py nohup /usr/local/bin/flask run --host=0.0.0.0 &
+      become: yes
+    
+   
+
+
+
+

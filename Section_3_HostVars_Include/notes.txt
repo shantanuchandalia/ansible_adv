@@ -1,0 +1,7 @@
+ansible-playbook playbook1.yml -i inv -vv
+
+tar -cvf host_vars_include_demo.tar *
+
+chown ec2-user:ec2-user /home/ec2-user/host_vars_include_demo.tar
+
+scp -i "Devops_Demo.pem" ec2-user@ec2-13-58-44-146.us-east-2.compute.amazonaws.com:/home/ec2-user/host_vars_include_demo.tar .

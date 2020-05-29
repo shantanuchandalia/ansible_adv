@@ -1,0 +1,42 @@
+yum install wget
+wget https://repo.mysql.com/mysql80-community-release-el8-1.noarch.rpm
+yum repolist enabled | grep "mysql.*-community.*"
+yum localinstall mysql80-community-release-el8-1.noarch.rpm
+yum install mysql-community-server
+service mysqld start
+service mysqld status
+mysql --version
+cat /var/log/mysqld.log
+mysql -u root -p
+
+----------------------Final-commands-on-redhat-----------
+
+yum install python38
+yum install mysql-server
+service mysqld start
+service mysqld status
+
+pip3 install flask
+pip3 install flask-mysql
+
+
+name='db_user' password='Passw0rd' priv='*.*:ALL' host='%' state='present'
+
+CREATE USER 'db_user'@'localhost' IDENTIFIED BY 'Passw0rd';
+GRANT ALL ON *.* TO db_user@'localhost';
+
+
+CREATE TABLE employees (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, lastname VARCHAR(20), firstname VARCHAR(20), phone VARCHAR(20),  dateofbirth DATE)
+
+INSERT INTO employees (id, lastname, firstname, phone, dateofbirth) VALUES (NULL, 'Smith', 'John', '(555)555-5555', '1980-01-31');
+
+
+FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 &
+
+--------------------------
+
+falsk.ext package not found
+
+PATH=$PATH:$HOME/bin
+PATH=$PATH:/usr/local
+export PATH
